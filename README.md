@@ -38,17 +38,15 @@ export CMC_API_KEY=your-api-key-here
 
 ### Claude Desktop
 
-Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json` under `mcpServers`:
 
 ```json
 {
-  "mcpServers": {
-    "coinmarketcap": {
-      "command": "uvx",
-      "args": ["coinmarketcap-mcp@latest"],
-      "env": {
-        "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
-      }
+  "coinmarketcap": {
+    "command": "uvx",
+    "args": ["coinmarketcap-mcp"],
+    "env": {
+      "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
     }
   }
 }
@@ -56,18 +54,15 @@ Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/
 
 ### Claude Code
 
-Add to your `~/.claude.json`:
+Add to your `~/.claude.json` under `mcpServers`:
 
 ```json
 {
-  "mcpServers": {
-    "coinmarketcap": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": ["coinmarketcap-mcp@latest"],
-      "env": {
-        "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
-      }
+  "coinmarketcap": {
+    "command": "uvx",
+    "args": ["coinmarketcap-mcp"],
+    "env": {
+      "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
     }
   }
 }
