@@ -22,17 +22,19 @@ git commit -m "chore: bump version to vX.Y.Z"
 git push
 ```
 
-### 3. Build & Publish to PyPI
-
-```bash
-uv build
-uv publish /Users/yimingyan/Playground/dist/coinmarketcap_mcp-X.Y.Z*
-```
-
-### 4. Create GitHub Release
+### 3. Create GitHub Release
 
 ```bash
 gh release create vX.Y.Z --title "vX.Y.Z" --notes "Release notes here"
+```
+
+**Note:** PyPI publish is automated via GitHub Actions when a release is created.
+
+### Manual PyPI Publish (if needed)
+
+```bash
+uv build
+uv publish dist/coinmarketcap_mcp-X.Y.Z*
 ```
 
 ## Environment Variables
