@@ -1,58 +1,37 @@
 # CoinMarketCap MCP Server
 
-MCP server for [CoinMarketCap API](https://coinmarketcap.com/api/) - search tokens, get metadata, and market data for cryptocurrency validation workflows.
+[![PyPI version](https://badge.fury.io/py/coinmarketcap-mcp.svg)](https://pypi.org/project/coinmarketcap-mcp/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Built with Claude Code](https://img.shields.io/badge/Built%20with-Claude%20Code-blueviolet)](https://claude.ai/code)
+
+An [MCP (Model Context Protocol)](https://modelcontextprotocol.io/) server for querying cryptocurrency data from [CoinMarketCap](https://coinmarketcap.com/). Enables AI assistants like Claude to search tokens, validate metadata, and retrieve market data through natural language.
 
 ## Features
 
-- **Token Lookup**: Efficiently check if a cryptocurrency is listed on CoinMarketCap
-- **Metadata Retrieval**: Get detailed token profiles including description, logos, links, and platform info
-- **Market Data**: Get latest prices, volume, market cap, and price changes
-- **Exchange Info**: Look up exchange metadata and trading data
-- **Global Metrics**: Access total market cap, BTC dominance, and other global stats
+- **Progressive Search** - Find tokens by name, symbol, or homepage URL with fuzzy matching
+- **Symbol Variation Handling** - Automatically handles rebrands (RNDR→RENDER, MATIC→POL)
+- **Homepage Verification** - Verify token identity by matching website URLs
+- **Market Data** - Get latest prices, volume, market cap, and price changes
+- **Token Metadata** - Retrieve descriptions, logos, social links, and platform info
+- **Exchange Info** - Look up exchange metadata and trading data
 
-## Installation
+## Quick Start
 
-```bash
-# Using uv (recommended)
-uv pip install coinmarketcap-mcp
+### Step 1: Get CoinMarketCap API Key
 
-# Using pip
-pip install coinmarketcap-mcp
-```
+1. Go to [CoinMarketCap API](https://coinmarketcap.com/api/)
+2. Sign up for a free account
+3. Copy your API key from the dashboard
 
-## Configuration
+### Step 2: Store API Key
 
-### API Key Setup
-
-Get your free API key from [CoinMarketCap API](https://coinmarketcap.com/api/).
-
-Set the environment variable:
+Add to your `~/.env.local`:
 
 ```bash
-export COINMARKETCAP_API_KEY=your-api-key-here
-# Or alternatively:
-export CMC_API_KEY=your-api-key-here
+COINMARKETCAP_API_KEY=your-api-key-here
 ```
 
-## Usage
-
-### Claude Desktop
-
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json` under `mcpServers`:
-
-```json
-{
-  "coinmarketcap": {
-    "command": "uvx",
-    "args": ["coinmarketcap-mcp"],
-    "env": {
-      "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
-    }
-  }
-}
-```
-
-### Claude Code
+### Step 3: Configure Claude Code
 
 Add to your `~/.claude.json` under `mcpServers`:
 
@@ -68,41 +47,91 @@ Add to your `~/.claude.json` under `mcpServers`:
 }
 ```
 
-Make sure `COINMARKETCAP_API_KEY` is set in your `~/.env.local` or shell environment.
+### Step 4: Restart Claude Code
 
-### Run Directly
-
-```bash
-COINMARKETCAP_API_KEY=your-key coinmarketcap-mcp
-```
+Restart Claude Code to load the MCP server. You should now have access to CoinMarketCap tools.
 
 ## Available Tools
 
+### Search & Discovery
+
 | Tool | Description |
 |------|-------------|
-| `search_cryptocurrency` | Progressive search by name, symbol, and/or homepage URL |
-| `cryptocurrency_map` | Search if a token is listed on CoinMarketCap by symbol or slug |
-| `cryptocurrency_info` | Get detailed metadata/profile for cryptocurrencies |
-| `cryptocurrency_quotes_latest` | Get latest market data (price, volume, market cap) |
-| `exchange_map` | Search for exchanges on CoinMarketCap |
-| `exchange_info` | Get detailed metadata for exchanges |
-| `global_metrics_quotes_latest` | Get global market metrics (total market cap, BTC dominance) |
-| `key_info` | Get API key usage and limits |
+| `search_cryptocurrency` | Progressive search with fuzzy matching and homepage verification |
+| `cryptocurrency_map` | Direct lookup by symbol or slug |
+
+### Token Data
+
+| Tool | Description |
+|------|-------------|
+| `cryptocurrency_info` | Detailed metadata (description, logo, links, platform) |
+| `cryptocurrency_quotes_latest` | Latest price, volume, market cap, price changes |
+
+### Exchange Data
+
+| Tool | Description |
+|------|-------------|
+| `exchange_map` | Search for exchanges |
+| `exchange_info` | Exchange metadata and details |
+
+### Market Overview
+
+| Tool | Description |
+|------|-------------|
+| `global_metrics_quotes_latest` | Total market cap, BTC dominance, active coins |
+| `key_info` | API usage and rate limits |
+
+## Progressive Search
+
+The `search_cryptocurrency` tool uses multiple strategies to find tokens:
+
+1. **Exact symbol match** (high confidence)
+2. **Symbol variations** - handles rebrands like RNDR→RENDER (medium confidence)
+3. **Slug matching** - matches by name slug (medium confidence)
+4. **Fuzzy name search** - searches 5000+ tokens by similarity (low confidence)
+5. **Homepage verification** - boosts confidence by matching website URLs
+
+### Example
+
+```
+Query: name="Render Token", symbol="RNDR", homepage="https://rendernetwork.com"
+
+Search log:
+- exact_symbol(RNDR): failed (symbol was renamed)
+- symbol_variation(RENDER): 1 found
+- homepage_verification: exact match
+
+Result: Render (RENDER) - id=5690, confidence=verified
+```
 
 ## Example Queries
 
 ```
-# Progressive search with name and homepage verification
 "Search for a token named 'Uniswap' with homepage 'https://uniswap.org'"
 
-# Check if a token is listed
-"Is SOL listed on CoinMarketCap?"
+"Is RENDER listed on CoinMarketCap?"
 
-# Get token metadata
-"Get the profile and description for Ethereum"
+"Get the profile and description for Chainlink"
 
-# Check current prices
-"What's the current price and market cap of BTC?"
+"What's the current price and market cap of BTC and ETH?"
+
+"Check my API usage"
+```
+
+## Claude Desktop
+
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json` under `mcpServers`:
+
+```json
+{
+  "coinmarketcap": {
+    "command": "uvx",
+    "args": ["coinmarketcap-mcp"],
+    "env": {
+      "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
+    }
+  }
+}
 ```
 
 ## Development
@@ -115,11 +144,8 @@ cd coinmarketcap-mcp
 # Install dependencies
 uv sync
 
-# Run tests
-uv run pytest
-
 # Run the server locally
-uv run coinmarketcap-mcp
+COINMARKETCAP_API_KEY=your-key uv run coinmarketcap-mcp
 ```
 
 ## License
