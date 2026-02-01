@@ -29,6 +29,8 @@ Add to your `~/.env.local`:
 
 ```bash
 COINMARKETCAP_API_KEY=your-api-key-here
+# Or alternatively:
+CMC_API_KEY=your-api-key-here
 ```
 
 ### Step 3: Configure Claude Code
