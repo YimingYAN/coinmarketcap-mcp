@@ -45,9 +45,9 @@ Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/
   "mcpServers": {
     "coinmarketcap": {
       "command": "uvx",
-      "args": ["coinmarketcap-mcp"],
+      "args": ["coinmarketcap-mcp@latest"],
       "env": {
-        "COINMARKETCAP_API_KEY": "your-api-key-here"
+        "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
       }
     }
   }
@@ -56,7 +56,7 @@ Add to your Claude Desktop configuration (`~/Library/Application Support/Claude/
 
 ### Claude Code
 
-Add to your Claude Code MCP configuration (`~/.claude.json`):
+Add to your `~/.claude.json`:
 
 ```json
 {
@@ -64,14 +64,16 @@ Add to your Claude Code MCP configuration (`~/.claude.json`):
     "coinmarketcap": {
       "type": "stdio",
       "command": "uvx",
-      "args": ["coinmarketcap-mcp"],
+      "args": ["coinmarketcap-mcp@latest"],
       "env": {
-        "COINMARKETCAP_API_KEY": "your-api-key-here"
+        "COINMARKETCAP_API_KEY": "${COINMARKETCAP_API_KEY}"
       }
     }
   }
 }
 ```
+
+Make sure `COINMARKETCAP_API_KEY` is set in your `~/.env.local` or shell environment.
 
 ### Run Directly
 
